@@ -21,6 +21,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('all_categories','CategoryController@all_categories')->name('all_categories');
 Route::post('save_category','CategoryController@save_category')->name('save_category');
+Route::put('update_category/{category}','CategoryController@update_category')->name('update_category');
+Route::delete('delete_category/{id}','CategoryController@delete_category')->name('delete_category');
 
 
 

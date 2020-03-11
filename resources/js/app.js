@@ -16,13 +16,21 @@ Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 window.Form = Form;
 
+// Fire event ($emit,$on)
+window.Fire = new Vue();
+
+// vuex
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
 // sweet alert
 import Swal from 'sweetalert2'
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    timer: 3000,
+    timer: 2000,
     timerProgressBar: true,
     onOpen: (toast) => {
       toast.addEventListener('mouseenter', Swal.stopTimer)

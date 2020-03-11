@@ -1,6 +1,7 @@
 <template>
-    <div class="row mt-2">
-          <div class="col-8 offset-2">
+    <div class="row justify-content-around mt-2">
+          <!-- <div class="col-8 offset-2"> -->
+          <div class="col-8">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">All Categories</h3>
@@ -27,12 +28,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="category in categories" :key="category.id">
-                        <td>{{category.id}}</td>
+                    <tr v-for="(category,index) in categories" :key="category.id">
+                        <td>{{index+1}}</td>
                         <td>{{category.name}}</td>
                         <td>
                             <button class="btn btn-warning" @click="edit_category(category)">Edit</button>
-                            <button class="btn btn-danger">Delete</button>
+                            <button class="btn btn-danger" @click="delete_category(category.id)">Delete</button>
                         </td>
                     </tr>
                   </tbody>
@@ -56,7 +57,7 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                 <form action="" @submit.prevent="save_category()">
+                 <form action="" @submit.prevent="is_edit?update_category() : save_category()">
                 <div class="modal-body">
                    
                         <div class="form-group">
@@ -89,6 +90,7 @@ export default {
             primary : 'btn btn-primary',
             is_edit : false,
             form : new Form({
+                id : '',
                 name : ''
             })
         }
@@ -104,7 +106,7 @@ export default {
             });
         },
         add_new_category(){
-            // this.form.reset();
+            this.form.reset();
             this.form.clear();
             this.is_edit = false;
             $('#category_modal').modal('show');
@@ -116,6 +118,8 @@ export default {
                 icon: 'success',
                 title: res.data.message
                 })
+                Fire.$emit('refresh_data');
+                // this.$router.push('/category');
                 $('#category_modal').modal('hide');
             });
         },
@@ -123,11 +127,40 @@ export default {
                 this.form.fill(category);
                 this.is_edit = true;
                 $('#category_modal').modal('show');
+        },
+        update_category(){
+          // alert(this.form.id);
+          this.form.put('update_category/'+this.form.id)
+          .then(res=>{
+            console.log(res.data);
+            $('#category_modal').modal('hide');
+            Toast.fire({
+                icon: 'success',
+                title: res.data.message
+                })
+                Fire.$emit('refresh_data');
+          })
+          .catch(err => {
+            console.log(err)
+          });
+        },
+        delete_category(id){
+          this.form.delete('delete_category/'+id)
+          .then(res=>{
+            Toast.fire({
+                icon: 'success',
+                title: res.data.message
+                })
+                Fire.$emit('refresh_data');
+          });
         }
         
     },
     created(){
         this.all_categories();
+        Fire.$on('refresh_data',()=>{
+          this.all_categories();
+        });
     }
 }
 </script>
